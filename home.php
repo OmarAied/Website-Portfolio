@@ -22,12 +22,12 @@
                 <i class="fas fa-bars"></i>
             </label>
             <ul>
-                <li><a href="home.html">Home</a></li>
-                <li><a href="projects.html">Projects</a></li>
+                <li><a href="home.php">Home</a></li>
+                <li><a href="projects.php">Projects</a></li>
                 <li><a href="#education">Education</a></li>
                 <li><a href="#skills">Skills</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="addPost.html">Post</a></li>
+                <li><a href="login.php">Login</a></li>
+                <li><a href="addPost.php">Post</a></li>
             </ul>
         </nav>
     </header>
