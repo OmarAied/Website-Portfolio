@@ -1,3 +1,56 @@
+<?php
+session_start();
+
+//If not logged in then go to login page
+if(!isset($_SESSION["user_id"])){
+    header("Location: login.php");
+    exit;
+}
+
+if (isset($_SESSION['alert_message'])) {
+    echo '<div class="alert">' . htmlspecialchars($_SESSION['alert_message']) . '</div>';
+}
+
+
+
+$host = 'localhost';
+$dbname = 'user_auth';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+
+$success = '';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = trim($_POST['name'] ?? '');
+    $blog = trim($_POST['blog'] ?? '');
+    $user_id = $_SESSION['user_id'];
+
+    try{
+        $stmt = $pdo->prepare("INSERT INTO posts (user_id, author_name, content) VALUES (?, ?, ?)");
+                $stmt->execute([$user_id, $name, $blog]);
+                
+                $success = "Blog post submitted successfully!";
+                // Clear form after successful submission
+                $_POST['name'] = '';
+                $_POST['blog'] = '';
+    }
+    catch (PDOException $e) {
+        $error = "Error submitting post. Please try again.";
+        error_log("Post submission error: " . $e->getMessage());
+    }
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,24 +78,34 @@
                 <li><a href="projects.php">Projects</a></li>
                 <li><a href="home.php#education">Education</a></li>
                 <li><a href="home.php">Skills</a></li>
-                <li><a href="login.php">Login</a></li>
+                <li><a href="logout.php">Logout</a></li>
                 <li><a href="addPost.php">Post</a></li>
             </ul>
         </nav>
     </header>
 
-    <form method="GET" action="">
+    <?php if ($success): ?>
+        <div class="alert success"><?php echo htmlspecialchars($success); ?></div>
+    <?php endif; ?>
+    
+    <?php if ($error): ?>
+        <div class="alert error"><?php echo htmlspecialchars($error); ?></div>
+    <?php endif; ?>
+
+    <form method="POST" action="">
         <fieldset id = "main">
             <legend>BLOG POST</legend>
             <p>
                 <label for="name">Name</label> <br>
-                <input type="text" name="name" placeholder="John Smith">
+                <input type="text" name="name" placeholder="John Smith" 
+                       value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>">
             </p>
 
             <p>
                 <label for="blog">Blog contents</label> <br>
                 <div class="textarea-container">
-                    <textarea id="blog" name="blog" placeholder="Write your blog here" rows="10" cols="50"></textarea>
+                    <textarea id="blog" name="blog" placeholder="Write your blog here" 
+                              rows="10" cols="50"><?php echo htmlspecialchars($_POST['blog'] ?? ''); ?></textarea>
                 </div>
             </p>
             <footer>                
@@ -50,7 +113,7 @@
                     <br>
                     <button type="submit">Submit</button>
                     <br>
-                    <button type="clear">Clear</button>
+                    <button type="reset">Clear</button>
                 </div>
             </footer>
         </fieldset>

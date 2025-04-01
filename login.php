@@ -5,42 +5,39 @@ session_start();
 // Database configuration
 $host = 'localhost';
 $dbname = 'user_auth';
-$username = 'root'; // Default XAMPP username
-$password = '';     // Default XAMPP password (empty)
+$username = 'root';
+$password = '';
 
 // Connect to database
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }
 
 // Handle form submission
+$email = $_POST['email'] ?? '';
+$password = $_POST['password'] ?? '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-    
-    // Validate inputs
-    if (!empty($email) && !empty($password)) {
-        // Prepare SQL statement
-        $stmt = $pdo->prepare("SELECT id, email, password FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        $user = $stmt->fetch();
+    // Prepare SQL statement
+    $stmt = $pdo->prepare("SELECT id, email, name,  password FROM users WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+
+    if ($user && password_verify($password, $user['password'])) {
+        // Successful login
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_email'] = $user['email'];
+        $_SESSION['user_name'] = $user['name'];
         
-        if ($user && password_verify($password, $user['password'])) {
-            // Successful login
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_email'] = $user['email'];
-            
-            // Redirect to a protected page
-            header('Location: addPost.php');
-            exit;
-        } else {
-            $error = "Invalid email or password";
-        }
+        // Redirect to a protected page
+        $_SESSION['alert_message'] = 'Login successful! Welcome back, ' .$user['name']. '!';
+        $_SESSION['alert_type'] = 'success';
+        header('Location: addPost.php');
+        exit;
     } else {
-        $error = "Please fill in all fields";
+        $_SESSION['alert_message'] = "Invalid email or password";
     }
 }
 ?>
@@ -81,8 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <fieldset id="login">
             <legend>LOGIN</legend>
             
-            <?php if (isset($error)): ?>
-                <div class="error"><?php echo htmlspecialchars($error); ?></div>
+            <?php if (isset($_SESSION['alert_message'])): ?>
+                <div class="alert <?php echo $_SESSION['alert_type'] ?? 'info'; ?>">
+                    <?php echo htmlspecialchars($_SESSION['alert_message']); ?>
+                </div>
+                <?php unset($_SESSION['alert_message']); ?>
             <?php endif; ?>
             
             <p>
