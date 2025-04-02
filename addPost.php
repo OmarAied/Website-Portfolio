@@ -8,7 +8,11 @@ if(!isset($_SESSION["user_id"])){
 }
 
 if (isset($_SESSION['alert_message'])) {
-    echo '<div class="alert">' . htmlspecialchars($_SESSION['alert_message']) . '</div>';
+    $alert_message = $_SESSION['alert_message'];
+    $alert_type = $_SESSION['alert_type'] ?? 'success';
+    unset($_SESSION['alert_message']);
+    unset($_SESSION['alert_type']);
+    echo '<div class="alert '.htmlspecialchars($alert_type).'">'.htmlspecialchars($alert_message).'</div>';
 }
 
 
@@ -33,19 +37,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $blog = trim($_POST['blog'] ?? '');
     $user_id = $_SESSION['user_id'];
 
-    try{
+    if (!empty($name) && !empty($blog)) {
+        try{
         $stmt = $pdo->prepare("INSERT INTO posts (user_id, author_name, content) VALUES (?, ?, ?)");
-                $stmt->execute([$user_id, $name, $blog]);
-                
-                $success = "Blog post submitted successfully!";
-                // Clear form after successful submission
-                $_POST['name'] = '';
-                $_POST['blog'] = '';
+        $stmt->execute([$user_id, $name, $blog]);
+        
+        $success = "Blog post submitted successfully!";
+        // Clear form after successful submission
+        $_POST['name'] = '';
+        $_POST['blog'] = '';
+        }
+        catch (PDOException $e) {
+            $error = "Error submitting post. Please try again.";
+            error_log("Post submission error: " . $e->getMessage());
+        }
     }
-    catch (PDOException $e) {
-        $error = "Error submitting post. Please try again.";
-        error_log("Post submission error: " . $e->getMessage());
+    else {
+        $_SESSION['alert_message'] = "Please fill in all fields";
+        $_SESSION['alert_type'] = 'error';
     }
+    
 }
 
 
@@ -113,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <br>
                     <button type="submit">Submit</button>
                     <br>
-                    <button type="reset">Clear</button>
+                    <button type="clear">Clear</button>
                 </div>
             </footer>
         </fieldset>

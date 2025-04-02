@@ -15,30 +15,41 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Handle form submission
-$email = $_POST['email'] ?? '';
-$password = $_POST['password'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Prepare SQL statement
-    $stmt = $pdo->prepare("SELECT id, email, name,  password FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    if ($user && password_verify($password, $user['password'])) {
-        // Successful login
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_name'] = $user['name'];
+    if (!empty($email) && !empty($password)) {
+        // Prepare SQL statement
+        $stmt = $pdo->prepare("SELECT id, email, name,  password FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
         
-        // Redirect to a protected page
-        $_SESSION['alert_message'] = 'Login successful! Welcome back, ' .$user['name']. '!';
-        $_SESSION['alert_type'] = 'success';
-        header('Location: addPost.php');
-        exit;
-    } else {
-        $_SESSION['alert_message'] = "Invalid email or password";
+        if ($user && password_verify($password, $user['password'])) {
+            // Successful login
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_name'] = $user['name'];
+            
+            // Redirect to a protected page
+            $_SESSION['alert_message'] = 'Login successful! Welcome back, ' .$user['name']. '!';
+            $_SESSION['alert_type'] = 'success';
+            session_write_close();
+            header('Location: addPost.php');
+            exit;
+        } 
+        else {
+            $_SESSION['alert_message'] = "Invalid email or password";
+            $_SESSION['alert_type'] = 'error';
+        }
     }
+    else {
+        $_SESSION['alert_message'] = "Please fill in all fields";
+        $_SESSION['alert_type'] = 'error';
+    }
+
+    
 }
 ?>
 
@@ -87,12 +98,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <p>
                 <label for="email">Email Address</label> <br>
-                <input type="email" name="email" placeholder="johnsmith@email.com" required>
+                <input type="email" name="email" placeholder="johnsmith@email.com">
             </p>
 
             <p>
                 <label for="password">Password</label> <br>
-                <input type="password" name="password" placeholder="password123" minlength="8" maxlength="20" required>
+                <input type="password" name="password" placeholder="password123" minlength="8" maxlength="20">
             </p>
             <footer>                
                 <div class="buttons">

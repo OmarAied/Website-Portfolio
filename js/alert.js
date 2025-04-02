@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Remove the alert from DOM after fade out
             setTimeout(() => {
                 alert.remove();
-            }, 500);
-        }, 5000);
+            }, 300);
+        }, 3000);
     }
 });
