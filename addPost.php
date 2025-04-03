@@ -56,8 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     else {
         $_SESSION['alert_message'] = "Please fill in all fields";
         $_SESSION['alert_type'] = 'error';
-        header("Location: addPost.php");
-        exit;
+        // header("Location: addPost.php");
+        // exit;
     }
     
 }
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="https://www.linkedin.com/in/omar-aied-096ba5278/" target="_blank"><img src="images/linkedin.png" alt=""></a>
         </div>
     </footer>
-
+    <script src="js/clearConfirm.js"></script>
     <script src="js/alert.js"></script>
 </body>
 </html>
