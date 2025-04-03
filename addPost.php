@@ -42,10 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("INSERT INTO posts (user_id, author_name, content) VALUES (?, ?, ?)");
         $stmt->execute([$user_id, $name, $blog]);
         
-        $success = "Blog post submitted successfully!";
+        $_SESSION['alert_message'] = "Blog post submitted successfully!";
+        $_SESSION['alert_type'] = 'success';
         // Clear form after successful submission
-        $_POST['name'] = '';
-        $_POST['blog'] = '';
+        header("Location: addPost.php");
+        exit;
         }
         catch (PDOException $e) {
             $error = "Error submitting post. Please try again.";
@@ -55,6 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     else {
         $_SESSION['alert_message'] = "Please fill in all fields";
         $_SESSION['alert_type'] = 'error';
+        header("Location: addPost.php");
+        exit;
     }
     
 }
@@ -124,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <br>
                     <button type="submit">Submit</button>
                     <br>
-                    <button type="clear">Clear</button>
+                    <button type="reset">Clear</button>
                 </div>
             </footer>
         </fieldset>
