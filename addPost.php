@@ -71,6 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post</title>
+    <script src="js/clearConfirm.js"></script>
+    <script src="js/alert.js"></script>
     <!-- <link rel="stylesheet" href="css/reset.css"> -->
     <link rel="stylesheet" href="css/master.css">
     <link rel="stylesheet" href="css/loginAndPost.css">
@@ -142,7 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="https://www.linkedin.com/in/omar-aied-096ba5278/" target="_blank"><img src="images/linkedin.png" alt=""></a>
         </div>
     </footer>
-    <script src="js/clearConfirm.js"></script>
-    <script src="js/alert.js"></script>
+
 </body>
 </html>
