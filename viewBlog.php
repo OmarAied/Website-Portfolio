@@ -1,6 +1,14 @@
 <?php
 session_start();
 
+if (isset($_SESSION['alert_message'])) {
+    $alert_message = $_SESSION['alert_message'];
+    $alert_type = $_SESSION['alert_type'] ?? 'success';
+    unset($_SESSION['alert_message']);
+    unset($_SESSION['alert_type']);
+    echo '<div class="alert '.htmlspecialchars($alert_type).'">'.htmlspecialchars($alert_message).'</div>';
+}
+
 // Database configuration
 $host = 'localhost';
 $dbname = 'user_auth';
@@ -32,8 +40,9 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Blogs</title>
+    <script src="js/alert.js"></script>
     <link rel="stylesheet" href="css/master.css">
-    <link rel="stylesheet" href="css/blog.css"> <!-- New CSS file for blog styling -->
+    <link rel="stylesheet" href="css/blog.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -64,6 +73,12 @@ try {
     </header>
 
     <main class="blog-container">
+        <?php if (isset($alert_message)): ?>
+            <div class="alert <?php echo htmlspecialchars($alert_type); ?>">
+                <?php echo htmlspecialchars($alert_message); ?>
+            </div>
+        <?php endif; ?>
+
         <h2>Recent Blog Posts</h2>
         
         <?php if(empty($posts)): ?>
@@ -77,7 +92,7 @@ try {
                                 <div class="post-meta">
                                     <span class="post-author">By <?php echo htmlspecialchars($post['author_name']); ?></span>
                                     <time datetime="<?php echo $post['created_at']; ?>">
-                                        <?php echo date('F j, Y', strtotime($post['created_at'])); ?>
+                                        <?php echo date('F j, Y H:i', strtotime($post['created_at'])); ?>
                                     </time>
                                 </div>
                             </div>

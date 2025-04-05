@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!empty($email) && !empty($password)) {
         // Prepare SQL statement
-        $stmt = $pdo->prepare("SELECT id, email, name,  password FROM users WHERE email = ?");
+        $stmt = $pdo->prepare("SELECT id, email, name,  password, is_admin FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
         
@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_name'] = $user['name'];
+            $_SESSION['is_admin'] = (bool)$user['is_admin'];
             
             // Redirect to a protected page
             $_SESSION['alert_message'] = 'Login successful! Welcome back, ' .$user['name']. '!';
