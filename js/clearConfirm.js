@@ -2,18 +2,20 @@
 document.addEventListener('DOMContentLoaded', function() {
     const clearButton = document.querySelector('button[type="reset"]');
     const textarea = document.getElementById('blog');
-    const nameInput = document.querySelector('input[name="name"]');
+    const title = document.querySelector('input[name="title"]');
     
     if (clearButton) {
         clearButton.addEventListener('click', function(e) {
-            if (nameInput.value.trim() !== '' || textarea.value.trim() !== '') {
+            if (title.value.trim() !== '' || textarea.value.trim() !== '') {
                 e.preventDefault();
                 
                 const confirmation = confirm("Are you sure you want to clear your blog post?");
                 
                 if (confirmation) {
-                    nameInput.value = '';
+                    title.value = '';
                     textarea.value = '';
+                    title.classList.add('empty');
+                    textarea.classList.add('empty');
                     
                     const alertDiv = document.createElement('div');
                     alertDiv.className = 'alert success';

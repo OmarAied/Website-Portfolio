@@ -4,7 +4,6 @@ body{
     color: white;
 }
 form{
-
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -38,6 +37,10 @@ textarea {
     font-size: 16px; /* Sets the font size */
     resize: vertical;
     overflow: auto;
+}
+
+textarea, #title {
+    border: 3px solid #018a54;
 }
 
 #login{
@@ -103,4 +106,21 @@ button:hover{
 .alert.hide {
     top: 20px;
     opacity: 0;
+}
+
+.empty {
+    border: 2px solid #e31b6d !important;
+    box-shadow: 0 0 5px rgba(227, 27, 109, 0.5) !important;
+    animation: pulse 0.5s ease-in-out;
+}
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

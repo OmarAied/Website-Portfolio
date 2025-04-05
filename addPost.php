@@ -33,14 +33,14 @@ $success = '';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
+    $title = trim($_POST['title'] ?? '');
     $blog = trim($_POST['blog'] ?? '');
     $user_id = $_SESSION['user_id'];
 
-    if (!empty($name) && !empty($blog)) {
+    if (!empty($title) && !empty($blog)) {
         try{
-        $stmt = $pdo->prepare("INSERT INTO posts (user_id, author_name, content) VALUES (?, ?, ?)");
-        $stmt->execute([$user_id, $name, $blog]);
+        $stmt = $pdo->prepare("INSERT INTO posts (user_id, title, content) VALUES (?, ?, ?)");
+        $stmt->execute([$user_id, $title, $blog]);
         
         $_SESSION['alert_message'] = "Blog post submitted successfully!";
         $_SESSION['alert_type'] = 'success';
@@ -73,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Post</title>
     <script src="js/clearConfirm.js"></script>
     <script src="js/alert.js"></script>
+    <script src="js/formValidation.js"></script>
     <!-- <link rel="stylesheet" href="css/reset.css"> -->
     <link rel="stylesheet" href="css/master.css">
     <link rel="stylesheet" href="css/loginAndPost.css">
@@ -93,9 +94,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <li><a href="home.php">Home</a></li>
                 <li><a href="projects.php">Projects</a></li>
                 <li><a href="home.php#education">Education</a></li>
-                <li><a href="home.php">Skills</a></li>
-                <li><a href="logout.php">Logout</a></li>
-                <li><a href="addPost.php">Post</a></li>
+                <li><a href="home.php#skills">Skills</a></li>
+                <li><a href="viewBlog.php">View Blogs</a></li>
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <li><a href="addPost.php">Add Post</a></li>
+                    <li><a href="logout.php">Logout</a></li>
+                <?php else: ?>
+                    <li><a href="login.php">Login</a></li>
+                <?php endif; ?>
             </ul>
         </nav>
     </header>
@@ -112,9 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <fieldset id = "main">
             <legend>BLOG POST</legend>
             <p>
-                <label for="name">Name</label> <br>
-                <input type="text" name="name" placeholder="John Smith" 
-                       value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>">
+                <label for="title">Blog Title</label> <br>
+                <input id = "title" type="text" name="title" placeholder="Write your title here"
+                    value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>">
             </p>
 
             <p>
