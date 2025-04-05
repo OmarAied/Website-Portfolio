@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['alert_message'] = "Blog post submitted successfully!";
         $_SESSION['alert_type'] = 'success';
         // Clear form after successful submission
-        header("Location: addPost.php");
+        header("Location: viewBlog.php");
         exit;
         }
         catch (PDOException $e) {
