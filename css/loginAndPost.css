@@ -65,49 +65,6 @@ button:hover{
     width: 50%
 }
 
-/* Alert Animation Styles */
-.alert {
-    position: fixed;
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 15px 30px;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
-    z-index: 1000;
-    opacity: 0;
-    transition: top 0.5s ease-out, opacity 0.5s ease-out;
-    text-align: center;
-    min-width: 300px;
-    max-width: 80%;
-}
-
-.alert.success {
-    background-color: #018a54;
-    box-shadow: 0 0 10px rgba(1, 138, 84, 0.5);
-}
-
-.alert.error {
-    background-color: #e31b6d;
-    box-shadow: 0 0 10px rgba(227, 27, 109, 0.5);
-}
-
-.alert.info {
-    background-color: #223247;
-    box-shadow: 0 0 10px rgba(34, 50, 71, 0.5);
-}
-
-.alert.show {
-    top: 20px;
-    opacity: 1;
-}
-
-.alert.hide {
-    top: 20px;
-    opacity: 0;
-}
-
 .empty {
     border: 2px solid #e31b6d !important;
     box-shadow: 0 0 5px rgba(227, 27, 109, 0.5) !important;
