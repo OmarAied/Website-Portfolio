@@ -1,3 +1,31 @@
+<?php
+session_start();
+
+// Database configuration
+$host = 'localhost';
+$dbname = 'user_auth';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    $stmt = $pdo->query("
+        SELECT p.id, p.content, p.created_at, u.name as author_name 
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+    ");
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    usort($posts, function($a, $b) {
+        return strtotime($b['created_at']) - strtotime($a['created_at']);
+    });
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,8 +52,13 @@
                 <li><a href="projects.php">Projects</a></li>
                 <li><a href="home.php#education">Education</a></li>
                 <li><a href="home.php#skills">Skills</a></li>
-                <li><a href="login.php">Login</a></li>
-                <li><a href="addPost.php">Post</a></li>
+                <li><a href="viewBlog.php">View Blogs</a></li>
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <li><a href="addPost.php">Add Post</a></li>
+                    <li><a href="logout.php">Logout</a></li>
+                <?php else: ?>
+                    <li><a href="login.php">Login</a></li>
+                <?php endif; ?>
             </ul>
         </nav>
     </header>

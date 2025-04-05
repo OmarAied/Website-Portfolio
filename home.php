@@ -1,3 +1,29 @@
+<?php
+session_start();
+
+// Database configuration
+$host = 'localhost';
+$dbname = 'user_auth';
+$username = 'root';
+$password = '';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Fetch all blog posts with author names, newest first
+    $stmt = $pdo->query("
+        SELECT p.id, p.content, p.created_at, u.name as author_name 
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        ORDER BY p.created_at DESC
+    ");
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,10 +50,15 @@
             <ul>
                 <li><a href="home.php">Home</a></li>
                 <li><a href="projects.php">Projects</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="login.php">Login</a></li>
-                <li><a href="addPost.php">Post</a></li>
+                <li><a href="home.php#education">Education</a></li>
+                <li><a href="home.php#skills">Skills</a></li>
+                <li><a href="viewBlog.php">View Blogs</a></li>
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <li><a href="addPost.php">Add Post</a></li>
+                    <li><a href="logout.php">Logout</a></li>
+                <?php else: ?>
+                    <li><a href="login.php">Login</a></li>
+                <?php endif; ?>
             </ul>
         </nav>
     </header>
