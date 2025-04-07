@@ -71,9 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post</title>
-    <script src="js/clearConfirm.js"></script>
-    <script src="js/alert.js"></script>
-    <script src="js/formValidation.js"></script>
+    <script src="js/clearConfirm.js">defer</script>
+    <script src="js/alert.js">defer</script>
+    <script src="js/formValidation.js">defer</script>
     <!-- <link rel="stylesheet" href="css/reset.css"> -->
     <link rel="stylesheet" href="css/master.css">
     <link rel="stylesheet" href="css/loginAndPost.css">
