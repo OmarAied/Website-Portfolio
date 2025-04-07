@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <script src="js/alert.js">defer</script>
+    <script src="js/alert.js" defer></script>
     <link rel="stylesheet" href="css/master.css">
     <link rel="stylesheet" href="css/loginAndPost.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
