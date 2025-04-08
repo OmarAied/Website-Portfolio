@@ -19,7 +19,7 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Fetch all blog posts with author names, newest first
+    // 1. Fetch all posts as a base array
     $stmtPosts = $pdo->query("
         SELECT p.id, p.title, p.content, p.created_at, u.name as author_name
         FROM posts p
@@ -27,28 +27,29 @@ try {
     ");
     $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
     
+    // 2. Create an array indexed by post ID for easy access
+    $postsById = [];
+    foreach ($posts as $post) {
+        $postsById[$post['id']] = $post;
+        $postsById[$post['id']]['comments'] = []; // Initialize comments array
+    }
+    
+    // 3. Fetch and attach comments
     $stmtComments = $pdo->query("
         SELECT c.id, c.post_id, c.content, c.created_at, u.name as author_name
         FROM comments c
         JOIN users u ON c.user_id = u.id
         ORDER BY c.created_at ASC
     ");
-    $allComments = $stmtComments->fetchAll(PDO::FETCH_ASSOC);
-
-    $commentsByPost = [];
-    foreach ($allComments as $comment) {
-        $postId = $comment['post_id'];
-        if (!isset($commentsByPost[$postId])) {
-            $commentsByPost[$postId] = [];
+    
+    while ($comment = $stmtComments->fetch(PDO::FETCH_ASSOC)) {
+        if (isset($postsById[$comment['post_id']])) {
+            $postsById[$comment['post_id']]['comments'][] = $comment;
         }
-        $commentsByPost[$postId][] = $comment;
     }
     
-    // Attach comments to their respective posts
-    foreach ($posts as &$post) {
-        $post['comments'] = $commentsByPost[$post['id']] ?? [];
-    }
-    
+    // 4. Convert back to simple array and sort
+    $posts = array_values($postsById);
     usort($posts, function($a, $b) {
         return strtotime($b['created_at']) - strtotime($a['created_at']);
     });
