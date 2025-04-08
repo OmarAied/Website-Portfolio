@@ -20,15 +20,39 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Fetch all blog posts with author names, newest first
-    $stmt = $pdo->query("
-        SELECT p.id, p.title, p.content, p.created_at, u.name as author_name 
+    $stmtPosts = $pdo->query("
+        SELECT p.id, p.title, p.content, p.created_at, u.name as author_name
         FROM posts p
         JOIN users u ON p.user_id = u.id
     ");
-    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
+    
+    $stmtComments = $pdo->query("
+        SELECT c.id, c.post_id, c.content, c.created_at, u.name as author_name
+        FROM comments c
+        JOIN users u ON c.user_id = u.id
+        ORDER BY c.created_at ASC
+    ");
+    $allComments = $stmtComments->fetchAll(PDO::FETCH_ASSOC);
+
+    $commentsByPost = [];
+    foreach ($allComments as $comment) {
+        $postId = $comment['post_id'];
+        if (!isset($commentsByPost[$postId])) {
+            $commentsByPost[$postId] = [];
+        }
+        $commentsByPost[$postId][] = $comment;
+    }
+    
+    // Attach comments to their respective posts
+    foreach ($posts as &$post) {
+        $post['comments'] = $commentsByPost[$post['id']] ?? [];
+    }
+    
     usort($posts, function($a, $b) {
         return strtotime($b['created_at']) - strtotime($a['created_at']);
     });
+
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }
@@ -98,6 +122,34 @@ try {
                             </div>
                             <div class="post-content">
                                 <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+                            </div>
+
+                            <div class="comments-section">
+                                <h4>Comments (<?= count($post['comments']) ?>)</h4>
+                                <?php if(isset($_SESSION['user_id'])): ?>
+                                    <form method="POST" action="addComment.php" class="comment-form">
+                                        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                                        <textarea name="content" placeholder="Write a comment..." required></textarea>
+                                        <button type="submit">Post Comment</button>
+                                    </form>
+                                <?php endif; ?>
+
+                                <?php foreach($post['comments'] as $comment): ?>
+                                    <div class="comment">
+                                        <div class="comment-header">
+                                            <span class="comment-author"><?= htmlspecialchars($comment['author_name']) ?></span>
+                                            <time><?= date('F j, Y H:i', strtotime($comment['created_at'])) ?></time>
+                                            
+                                            <?php if($_SESSION['is_admin'] ?? false): ?>
+                                                <form method="POST" action="deleteComment.php" class="delete-comment">
+                                                    <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>">
+                                                    <button type="submit" class="delete-btn" onclick="return confirm('Delete this comment?')">×</button>
+                                                </form>
+                                            <?php endif; ?>
+                                        </div>
+                                        <p><?= nl2br(htmlspecialchars($comment['content'])) ?></p>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
 
                             <?php if($_SESSION['is_admin'] ?? false): ?>

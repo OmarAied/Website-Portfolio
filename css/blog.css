@@ -72,3 +72,51 @@
 .delete-btn:hover {
     background-color: #c2105a;
 }
+
+
+/* Comments Section */
+.comments-section {
+    margin-top: 2em;
+    padding: 1em;
+    background-color: #1a283a;
+    border-radius: 8px;
+}
+
+.comment-form textarea {
+    width: 95%;
+    margin-bottom: 1em;
+    padding: 0.8em;
+    background-color: #223247;
+    border: 1px solid #018a54;
+    color: white;
+}
+
+.comment {
+    margin: 1em 0;
+    padding: 1em;
+    background-color: #223247;
+    border-radius: 5px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5em;
+    color: #aaa;
+    font-size: 0.9em;
+}
+
+.delete-comment {
+    display: inline-block;
+    margin-left: 1em;
+}
+
+.delete-comment .delete-btn {
+    background: none;
+    border: none;
+    color: #e31b6d;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0 0.5em;
+}
