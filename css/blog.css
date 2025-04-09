@@ -120,3 +120,23 @@
     cursor: pointer;
     padding: 0 0.5em;
 }
+
+/* Month filter styles */
+.month-filter {
+    margin: 1em 0 2em;
+    text-align: center;
+}
+
+.month-filter select {
+    padding: 8px 12px;
+    border-radius: 4px;
+    background-color: #223247;
+    color: white;
+    border: 1px solid #018a54;
+    font-size: 1em;
+}
+
+.month-filter label {
+    margin-right: 10px;
+    color: #aaa;
+}

@@ -19,12 +19,27 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // 1. Fetch all posts as a base array
-    $stmtPosts = $pdo->query("
+    $monthPicked = isset($_GET['month']) ? (int)$_GET['month'] : null;
+    
+    if ($monthPicked && ($monthPicked < 1 || $monthPicked > 12)) {
+        $monthPicked = null;
+    }
+
+    // MODIFIED POSTS QUERY
+    $query = "
         SELECT p.id, p.title, p.content, p.created_at, u.name as author_name
         FROM posts p
         JOIN users u ON p.user_id = u.id
-    ");
+    ";
+
+    if ($monthPicked) {
+        $query .= " WHERE MONTH(p.created_at) = :month";
+        $stmtPosts = $pdo->prepare($query);
+        $stmtPosts->bindValue(':month', $monthPicked, PDO::PARAM_INT);
+        $stmtPosts->execute();
+    } else {
+        $stmtPosts = $pdo->query($query);
+    }
     $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
     
     // 2. Create an array indexed by post ID for easy access
@@ -105,6 +120,25 @@ try {
         <?php endif; ?>
 
         <h2>Recent Blog Posts</h2>
+
+        <div class="month-filter">
+            <form method="GET" action="viewBlog.php">
+                <label for="month">Filter by month:</label>
+                <select name="month" id="month" onchange="this.form.submit()">
+                    <option value="">All</option>
+                    <?php
+                    $months = [
+                        'January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December'
+                    ];
+                    foreach ($months as $index => $month) {
+                        $selected = ($monthPicked == $index + 1) ? 'selected' : '';
+                        echo "<option value='".($index + 1)."' $selected>$month</option>";
+                    }
+                    ?>
+                </select>
+            </form>
+        </div>
         
         <?php if(empty($posts)): ?>
             <div class="no-posts">No blog posts yet. Be the first to post!</div>
