@@ -35,15 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(() => alertDiv.remove(), 300);
             }, 3000);
 
-            setTimeout(() => {
-                title.classList.remove('input-error');
-                textarea.classList.remove('input-error');
-                void title.offsetWidth;
-                void textarea.offsetWidth;
-                title.classList.add('input-error');
-                textarea.classList.add('input-error');
-            }, 10);
-
         }
     });
 
