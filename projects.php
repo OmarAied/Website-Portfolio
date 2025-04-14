@@ -34,6 +34,7 @@ try {
     <title>Projects</title>
     <!-- <link rel="stylesheet" href="css/reset.css"> -->
     <link rel="stylesheet" href="css/master.css">
+    <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/projects.css">
     <!-- <link rel="stylesheet" href="css/mobile.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />

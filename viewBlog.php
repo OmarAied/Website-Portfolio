@@ -25,7 +25,6 @@ try {
         $monthPicked = null;
     }
 
-    // MODIFIED POSTS QUERY
     $query = "
         SELECT p.id, p.title, p.content, p.created_at, u.name as author_name
         FROM posts p
@@ -42,14 +41,13 @@ try {
     }
     $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
     
-    // 2. Create an array indexed by post ID for easy access
+    
     $postsById = [];
     foreach ($posts as $post) {
         $postsById[$post['id']] = $post;
         $postsById[$post['id']]['comments'] = []; // Initialize comments array
     }
     
-    // 3. Fetch and attach comments
     $stmtComments = $pdo->query("
         SELECT c.id, c.post_id, c.content, c.created_at, u.name as author_name
         FROM comments c
@@ -63,7 +61,6 @@ try {
         }
     }
     
-    // 4. Convert back to simple array and sort
     $posts = array_values($postsById);
     usort($posts, function($a, $b) {
         return strtotime($b['created_at']) - strtotime($a['created_at']);
@@ -82,6 +79,7 @@ try {
     <title>View Blogs</title>
     <script src="js/alert.js" defer></script>
     <link rel="stylesheet" href="css/master.css">
+    <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/blog.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
