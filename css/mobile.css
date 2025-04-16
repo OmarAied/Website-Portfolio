@@ -1,12 +1,12 @@
 @media only screen and (max-width: 768px) {
-    /* .footer {
+     .footer {
         flex-direction: column;
         text-align: center;
     }
     
     .socials {
         margin-top: 1em;
-    } */
+    }
 
     /* Navigation */
     nav ul {
@@ -33,6 +33,7 @@
         right: 0;
     }
     
+
     /* Adjust grid layout on home page*/
     .container {
         display: flex;
@@ -41,6 +42,7 @@
         max-width: 100%;
         padding: 2em;
         margin-right: 0;
+        margin-bottom: 10em;
         top: 0;
     }
 
@@ -48,30 +50,33 @@
         padding: 0.5em;
     }
 
-    /* Ensure profile section comes first */
     main {
         order: -1;
     }
 
-    /* Adjust pfp size */
     .profile img {
         width: 100%;
     }
 
-    /* Sidebar adjustments */
     .leftSidebar, .rightSidebar, main {
         width: 100%;
         margin-top: 3em;
     }
     
+
     /* Login and Add Post pages */
     form {
-        width: 90%;
+        width: 50%;
         margin: 1em auto;
+        padding: 0;
+    }
+    legend {
+        padding-left: 10%;
+        padding-right: 10%;
     }
     
     fieldset {
-        padding: 1em;
+        padding: 0;
     }
     
     #title, #blog, #email, #password {
@@ -94,26 +99,35 @@
         width: 100%;
     }
     
+
+    /* Blog page */
+    .blog-posts {
+        padding: 3em;
+        margin-bottom: 1em;
+    }
+
+    .comment-header {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+
     /* Projects page */
     h2 {
-        font-size: 1.8em;
+        font-size: 3em;
         text-align: center;
         margin: 0.5em 0;
     }
     
     .project {
-        width: 100%;
-        margin-bottom: 2em;
         padding: 1em;
-        box-sizing: border-box;
+        /* box-sizing: border-box; */
     }
     
     .project h3 {
-        font-size: 1.3em;
-    }
-    
-    .project p.languages ul {
-        padding-left: 1em;
+        font-size: 1.5em;
     }
     
     /* Alert messages */
