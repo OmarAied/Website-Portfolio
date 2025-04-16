@@ -36,7 +36,7 @@ try {
     <link rel="stylesheet" href="css/master.css">
     <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/projects.css">
-    <!-- <link rel="stylesheet" href="css/mobile.css"> -->
+    <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Lora:ital,wght@0,400..700;1,400..700&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 </head>

@@ -1,4 +1,3 @@
-// clearConfirm.js
 document.addEventListener('DOMContentLoaded', function() {
     const clearButton = document.querySelector('button[type="reset"]');
     const textarea = document.getElementById('blog');

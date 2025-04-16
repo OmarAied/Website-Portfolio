@@ -52,7 +52,6 @@ try {
         SELECT c.id, c.post_id, c.content, c.created_at, u.name as author_name
         FROM comments c
         JOIN users u ON c.user_id = u.id
-        ORDER BY c.created_at ASC
     ");
     
     while ($comment = $stmtComments->fetch(PDO::FETCH_ASSOC)) {
@@ -78,6 +77,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Blogs</title>
     <script src="js/alert.js" defer></script>
+    <script src="js/deleteConfirm.js" defer></script>
     <link rel="stylesheet" href="css/master.css">
     <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/blog.css">
@@ -176,7 +176,7 @@ try {
                                             <?php if($_SESSION['is_admin'] ?? false): ?>
                                                 <form method="POST" action="deleteComment.php" class="delete-comment">
                                                     <input type="hidden" name="comment_id" value="<?= $comment['id'] ?>">
-                                                    <button type="submit" class="delete-btn" onclick="return confirm('Delete this comment?')">×</button>
+                                                    <button type="submit" class="delete-btn">X</button>
                                                 </form>
                                             <?php endif; ?>
                                         </div>
@@ -186,9 +186,9 @@ try {
                             </div>
 
                             <?php if($_SESSION['is_admin'] ?? false): ?>
-                                <form method="POST" action="deletePost.php" class="delete-form">
+                                <form method="POST" action="deletePost.php" class="delete-post">
                                     <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                                    <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this post?')">
+                                    <button type="submit" class="delete-btn">
                                         Delete Post
                                     </button>
                                 </form>
