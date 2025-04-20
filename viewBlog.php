@@ -99,7 +99,7 @@ $conn->close();
                 <li><a href="home.php#skills">Skills</a></li>
                 <li><a href="viewBlog.php">View Blogs</a></li>
                 <?php if(isset($_SESSION['user_id'])): ?>
-                    <li><a href="addPost.php">Add Post</a></li>
+                    <li><a href="addEntry.php">Add Post</a></li>
                     <li><a href="logout.php">Logout</a></li>
                 <?php else: ?>
                     <li><a href="login.php">Login</a></li>

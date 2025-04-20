@@ -1,75 +1,47 @@
 <?php
-// Start session
 session_start();
 
-// Database configuration
+//If not logged in then go to login page
+if(!isset($_SESSION["user_id"])){
+    header("Location: login.php");
+    exit;
+}
+
+if (isset($_SESSION['alert_message'])) {
+    $alert_message = $_SESSION['alert_message'];
+    $alert_type = $_SESSION['alert_type'] ?? 'success';
+    unset($_SESSION['alert_message']);
+    unset($_SESSION['alert_type']);
+    echo '<div class="alert '.htmlspecialchars($alert_type).'">'.htmlspecialchars($alert_message).'</div>';
+}
+
+
+
 $host = 'localhost';
 $dbname = 'user_auth';
 $username = 'root';
 $password = '';
 
-// Connect to database
 $conn = new mysqli($host, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-
-    if (!empty($email) && !empty($password)) {
-        $stmt = $conn->prepare("SELECT id, email, name, password, is_admin FROM users WHERE email = ?");
-        if ($stmt === false) {
-            die("Prepare failed: " . $conn->error);
-        }
-        $stmt->bind_param('s', $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
-        $stmt->close();
-        
-        if ($user && password_verify($password, $user['password'])) {
-            // Successful login
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_email'] = $user['email'];
-            $_SESSION['user_name'] = $user['name'];
-            $_SESSION['is_admin'] = (bool)$user['is_admin'];
-            
-            // Redirect to a protected page
-            if($_SESSION['is_admin']){
-                $_SESSION['alert_message'] = 'Login successful! Welcome back, ' .$user['name']. '!
-                (Admin)';
-                $_SESSION['alert_type'] = 'success';
-            }
-            else{
-                $_SESSION['alert_message'] = 'Login successful! Welcome back, ' .$user['name']. '!
-                (Not admin)';
-                $_SESSION['alert_type'] = 'success';
-            }
-            session_write_close();
-            header('Location: addEntry.php');
-            exit;
-        } else {
-            $_SESSION['alert_message'] = "Invalid email or password";
-            $_SESSION['alert_type'] = 'error';
-        }
-    } else {
-        $_SESSION['alert_message'] = "Please fill in all fields";
-        $_SESSION['alert_type'] = 'error';
-    }
-}
-
-$conn->close();
+$success = '';
+$error = '';
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Post</title>
+    <script src="js/clearConfirm.js" defer></script>
     <script src="js/alert.js" defer></script>
+    <script src="js/formValidation.js" defer></script>
+    <!-- <link rel="stylesheet" href="css/reset.css"> -->
     <link rel="stylesheet" href="css/master.css">
     <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/loginAndPost.css">
@@ -102,44 +74,50 @@ $conn->close();
         </nav>
     </header>
 
-    <form method="POST" action="login.php">
-        <fieldset id="login">
-            <legend>LOGIN</legend>
-            
-            <?php if (isset($_SESSION['alert_message'])): ?>
-                <div class="alert <?php echo $_SESSION['alert_type'] ?? 'info'; ?>">
-                    <?php echo htmlspecialchars($_SESSION['alert_message']); ?>
-                </div>
-                <?php unset($_SESSION['alert_message']); ?>
-            <?php endif; ?>
-            
+    <?php if ($success): ?>
+        <div class="alert success"><?php echo htmlspecialchars($success); ?></div>
+    <?php endif; ?>
+    
+    <?php if ($error): ?>
+        <div class="alert error"><?php echo htmlspecialchars($error); ?></div>
+    <?php endif; ?>
+
+    <form method="POST" action="addPost.php">
+        <fieldset id = "main">
+            <legend>BLOG POST</legend>
             <p>
-                <label for="email">Email Address</label> <br>
-                <input type="email" name="email" placeholder="johnsmith@email.com">
+                <label for="title">Blog Title</label> <br>
+                <input id = "title" type="text" name="title" placeholder="Write your title here"
+                    value="<?php echo htmlspecialchars($_POST['title'] ?? ''); ?>">
             </p>
 
             <p>
-                <label for="password">Password</label> <br>
-                <input type="password" name="password" placeholder="password123" minlength="8" maxlength="20">
+                <label for="blog">Blog contents</label> <br>
+                <div class="textarea-container">
+                    <textarea id="blog" name="blog" placeholder="Write your blog here" 
+                              ><?php echo htmlspecialchars($_POST['blog'] ?? ''); ?></textarea>
+                </div>
             </p>
             <footer>                
                 <div class="buttons">
                     <br>
                     <button type="submit">Submit</button>
+                    <br>
+                    <button type="reset">Clear</button>
                 </div>
             </footer>
         </fieldset>
     </form>
-
-    <footer class="footer">
+    
+    <footer class = "footer">
         <p>&copy; 2025 Omar Aied</p>
-        <div class="socials">
+        <div class = "socials">
             <p><a href="New cv.pdf" target="_blank">CV</a></p>
             <a href="mailto:ec24360@qmul.ac.uk" target="_blank"><img src="images/email.png" alt=""></a>
             <a href="https://github.com/OmarAied" target="_blank"><img src="images/github.png" alt=""></a>
             <a href="https://www.linkedin.com/in/omar-aied-096ba5278/" target="_blank"><img src="images/linkedin.png" alt=""></a>
         </div>
     </footer>
-    
+
 </body>
 </html>

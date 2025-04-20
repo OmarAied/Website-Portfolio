@@ -8,11 +8,12 @@ body{
 }
 form{
     display: flex;
-    margin-left: 25%;
+    margin-left: 35%;
     justify-content: center;
+    align-items: center;
     padding-bottom: 5em;
-    width: 50%;
-
+    width: 30%;
+    /* background-color: aqua; */
 }
 
 fieldset{
@@ -23,7 +24,7 @@ fieldset{
     margin-bottom: 3em;
     padding: 1em;
     width: 80%;
-    height: 80%;
+    /* height: 80%; */
 }
 
 legend{
