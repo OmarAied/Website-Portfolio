@@ -13,9 +13,10 @@ $username = 'root';
 $password = '';
 
 // Connect to database
-$conn = new mysqli($host, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,28 +24,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = trim($_POST['content'] ?? '');
 
     if ($post_id && !empty($content)) {
-        $stmt = $conn->prepare("INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)");
-        if ($stmt === false) {
-            die("Prepare failed: " . $conn->error);
-        }
-        $user_id = $_SESSION['user_id'];
-        $stmt->bind_param('iis', $post_id, $user_id, $content);
-        
-        if ($stmt->execute()) {
+        try {
+            $stmt = $pdo->prepare("INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)");
+            $stmt->execute([$post_id, $_SESSION['user_id'], $content]);
+            
             $_SESSION['alert_message'] = "Comment posted successfully!";
             $_SESSION['alert_type'] = 'success';
-        } else {
-            $_SESSION['alert_message'] = "Error posting comment: " . $stmt->error;
+        } catch (PDOException $e) {
+            $_SESSION['alert_message'] = "Error posting comment: " . $e->getMessage();
             $_SESSION['alert_type'] = 'error';
         }
-        $stmt->close();
     } else {
         $_SESSION['alert_message'] = "Please write a comment";
         $_SESSION['alert_type'] = 'error';
     }
 }
 
-$conn->close();
 header("Location: viewBlog.php");
 exit;
-?>
