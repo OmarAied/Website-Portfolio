@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle post deletion confirmations
     const blogDeleteButton = document.querySelectorAll('.delete-post button.delete-btn');
     
     blogDeleteButton.forEach(button => {
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle comment deletion confirmations
     const commentDeleteButton = document.querySelectorAll('.delete-comment button.delete-btn');
     
     commentDeleteButton.forEach(button => {

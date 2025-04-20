@@ -162,7 +162,7 @@ try {
                                 <?php if(isset($_SESSION['user_id'])): ?>
                                     <form method="POST" action="addComment.php" class="comment-form">
                                         <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                                        <textarea name="content" placeholder="Write a comment..." required></textarea>
+                                        <textarea name="content" placeholder="Write a comment..."></textarea>
                                         <button type="submit">Post Comment</button>
                                     </form>
                                 <?php endif; ?>
