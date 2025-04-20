@@ -12,31 +12,32 @@ $dbname = 'user_auth';
 $username = 'root';
 $password = '';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+$conn = new mysqli($host, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post_id = filter_input(INPUT_POST, 'post_id', FILTER_VALIDATE_INT);
     
     if ($post_id) {
-        try {
-            // Delete the post
-            $stmt = $pdo->prepare("DELETE FROM posts WHERE id = ?");
-            $stmt->execute([$post_id]);
-            
-            // Set success message
+        $stmt = $conn->prepare("DELETE FROM posts WHERE id = ?");
+        if ($stmt === false) {
+            die("Prepare failed: " . $conn->error);
+        }
+        $stmt->bind_param('i', $post_id);
+        if ($stmt->execute()) {
             $_SESSION['alert_message'] = "Post deleted successfully!";
             $_SESSION['alert_type'] = 'success';
-        } catch (PDOException $e) {
-            $_SESSION['alert_message'] = "Error deleting post: " . $e->getMessage();
+        } else {
+            $_SESSION['alert_message'] = "Error deleting post: " . $stmt->error;
             $_SESSION['alert_type'] = 'error';
         }
+        $stmt->close();
     }
 }
 
+$conn->close();
 header("Location: viewBlog.php");
 exit;
+?>

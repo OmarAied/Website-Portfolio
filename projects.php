@@ -7,23 +7,11 @@ $dbname = 'user_auth';
 $username = 'root';
 $password = '';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    $stmt = $pdo->query("
-        SELECT p.id, p.content, p.created_at, u.name as author_name 
-        FROM posts p
-        JOIN users u ON p.user_id = u.id
-    ");
-    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    usort($posts, function($a, $b) {
-        return strtotime($b['created_at']) - strtotime($a['created_at']);
-    });
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+$conn = new mysqli($host, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+$conn->close();
 ?>
 
 <!DOCTYPE html>

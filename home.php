@@ -7,21 +7,11 @@ $dbname = 'user_auth';
 $username = 'root';
 $password = '';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    // Fetch all blog posts with author names, newest first
-    $stmt = $pdo->query("
-        SELECT p.id, p.content, p.created_at, u.name as author_name 
-        FROM posts p
-        JOIN users u ON p.user_id = u.id
-        ORDER BY p.created_at DESC
-    ");
-    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+$conn = new mysqli($host, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+$conn->close();
 ?>
 
 <!DOCTYPE html>

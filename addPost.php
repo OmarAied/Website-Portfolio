@@ -22,11 +22,9 @@ $dbname = 'user_auth';
 $username = 'root';
 $password = '';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+$conn = new mysqli($host, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
 $success = '';
@@ -38,31 +36,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_SESSION['user_id'];
 
     if (!empty($title) && !empty($blog)) {
-        try{
-        $stmt = $pdo->prepare("INSERT INTO posts (user_id, title, content) VALUES (?, ?, ?)");
-        $stmt->execute([$user_id, $title, $blog]);
+        $stmt = $conn->prepare("INSERT INTO posts (user_id, title, content) VALUES (?, ?, ?)");
+        if ($stmt === false) {
+            die("Prepare failed: " . $conn->error);
+        }
+        $stmt->bind_param('iss', $user_id, $title, $blog);
         
-        $_SESSION['alert_message'] = "Blog post submitted successfully!";
-        $_SESSION['alert_type'] = 'success';
-        // Clear form after successful submission
-        header("Location: viewBlog.php");
-        exit;
-        }
-        catch (PDOException $e) {
+        if ($stmt->execute()) {
+            $_SESSION['alert_message'] = "Blog post submitted successfully!";
+            $_SESSION['alert_type'] = 'success';
+            header("Location: viewBlog.php");
+            exit;
+        } else {
             $error = "Error submitting post. Please try again.";
-            error_log("Post submission error: " . $e->getMessage());
+            error_log("Post submission error: " . $stmt->error);
         }
-    }
-    else {
+        $stmt->close();
+    } else {
         $_SESSION['alert_message'] = "Please fill in all fields";
         $_SESSION['alert_type'] = 'error';
-        // header("Location: addPost.php");
-        // exit;
     }
-    
 }
 
-
+$conn->close();
 ?>
 
 <!DOCTYPE html>

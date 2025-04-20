@@ -15,59 +15,56 @@ $dbname = 'user_auth';
 $username = 'root';
 $password = '';
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-    $monthPicked = isset($_GET['month']) ? (int)$_GET['month'] : null;
-    
-    if ($monthPicked && ($monthPicked < 1 || $monthPicked > 12)) {
-        $monthPicked = null;
-    }
-
-    $query = "
-        SELECT p.id, p.title, p.content, p.created_at, u.name as author_name
-        FROM posts p
-        JOIN users u ON p.user_id = u.id
-    ";
-
-    if ($monthPicked) {
-        $query .= " WHERE MONTH(p.created_at) = :month";
-        $stmtPosts = $pdo->prepare($query);
-        $stmtPosts->bindValue(':month', $monthPicked, PDO::PARAM_INT);
-        $stmtPosts->execute();
-    } else {
-        $stmtPosts = $pdo->query($query);
-    }
-    $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
-    
-    
-    $postsById = [];
-    foreach ($posts as $post) {
-        $postsById[$post['id']] = $post;
-        $postsById[$post['id']]['comments'] = []; // Initialize comments array
-    }
-    
-    $stmtComments = $pdo->query("
-        SELECT c.id, c.post_id, c.content, c.created_at, u.name as author_name
-        FROM comments c
-        JOIN users u ON c.user_id = u.id
-    ");
-    
-    while ($comment = $stmtComments->fetch(PDO::FETCH_ASSOC)) {
-        if (isset($postsById[$comment['post_id']])) {
-            $postsById[$comment['post_id']]['comments'][] = $comment;
-        }
-    }
-    
-    $posts = array_values($postsById);
-    usort($posts, function($a, $b) {
-        return strtotime($b['created_at']) - strtotime($a['created_at']);
-    });
-
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+$conn = new mysqli($host, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
+
+$monthPicked = isset($_GET['month']) ? (int)$_GET['month'] : null;
+
+$query = "
+    SELECT p.id, p.title, p.content, p.created_at, u.name as author_name
+    FROM posts p
+    JOIN users u ON p.user_id = u.id
+";
+
+if ($monthPicked && $monthPicked >= 1 && $monthPicked <= 12) {
+    $query .= " WHERE MONTH(p.created_at) = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $monthPicked);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $posts = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+} else {
+    $result = $conn->query($query);
+    $posts = $result->fetch_all(MYSQLI_ASSOC);
+}
+
+$postsById = [];
+foreach ($posts as $post) {
+    $postsById[$post['id']] = $post;
+    $postsById[$post['id']]['comments'] = [];
+}
+
+$result = $conn->query("
+    SELECT c.id, c.post_id, c.content, c.created_at, u.name as author_name
+    FROM comments c
+    JOIN users u ON c.user_id = u.id
+");
+
+while ($comment = $result->fetch_assoc()) {
+    if (isset($postsById[$comment['post_id']])) {
+        $postsById[$comment['post_id']]['comments'][] = $comment;
+    }
+}
+
+$posts = array_values($postsById);
+usort($posts, function($a, $b) {
+    return strtotime($b['created_at']) - strtotime($a['created_at']);
+});
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
