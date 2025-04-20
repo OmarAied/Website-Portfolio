@@ -75,9 +75,10 @@ $conn->close();
     <title>View Blogs</title>
     <script src="js/alert.js" defer></script>
     <script src="js/deleteConfirm.js" defer></script>
+    <script src="js/monthFilter.js" defer></script>
     <link rel="stylesheet" href="css/master.css">
-    <link rel="stylesheet" href="css/mobile.css">
     <link rel="stylesheet" href="css/blog.css">
+    <link rel="stylesheet" href="css/mobile.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -119,7 +120,7 @@ $conn->close();
         <div class="month-filter">
             <form method="GET" action="viewBlog.php">
                 <label for="month">Filter by month:</label>
-                <select name="month" id="month" onchange="this.form.submit()">
+                <select name="month" id="month">
                     <option value="">All</option>
                     <?php
                     $months = [

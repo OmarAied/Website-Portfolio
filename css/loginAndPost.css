@@ -3,12 +3,16 @@ body{
     top: 5em;
     padding: 0;
     color: white;
+    align-items: center;
+    margin-bottom: 0;
 }
 form{
     display: flex;
-    align-items: flex-start;
+    margin-left: 25%;
     justify-content: center;
     padding-bottom: 5em;
+    width: 50%;
+
 }
 
 fieldset{
@@ -18,14 +22,16 @@ fieldset{
     position: relative;
     margin-bottom: 3em;
     padding: 1em;
+    width: 80%;
+    height: 80%;
 }
 
 legend{
     background-color: #e31b6d;
     color: white;
     font-weight: bold;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-left: 25%;
+    padding-right: 25%;
     margin:auto;
     width: auto;
 }
@@ -35,9 +41,9 @@ legend{
 }
 
 textarea {
-    height: 200px; /* Sets a fixed height */
-    padding: 10px; /* Adds some padding inside the textarea */
-    font-size: 16px; /* Sets the font size */
+    height: 200px;
+    padding: 10px; 
+    font-size: 16px;
     resize: vertical;
     overflow: auto;
 }
@@ -48,6 +54,11 @@ textarea, #title {
 
 #login{
     position: relative;
+}
+
+#title, #blog, #email, #password {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 button{

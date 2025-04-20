@@ -66,7 +66,7 @@
 
     /* Login and Add Post pages */
     form {
-        width: 50%;
+        width: 70%;
         margin: 1em auto;
         padding: 0;
     }
@@ -79,20 +79,14 @@
         padding: 0;
     }
     
-    #title, #blog, #email, #password {
+    /* #title, #blog, #email, #password {
         width: 100%;
         box-sizing: border-box;
-    }
+    } */
     
     textarea {
         width: 100%;
         box-sizing: border-box;
-    }
-    
-    .buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5em;
     }
     
     .buttons button {
@@ -113,6 +107,10 @@
         align-items: center;
     }
 
+    .blog-container h2 {
+        font-size: 2em;
+    }
+
 
     /* Projects page */
     h2 {
@@ -123,7 +121,6 @@
     
     .project {
         padding: 1em;
-        /* box-sizing: border-box; */
     }
     
     .project h3 {

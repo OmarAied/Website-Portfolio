@@ -30,7 +30,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
         
         if ($user && password_verify($password, $user['password'])) {
-            // ... [Session handling remains same] ...
+            // Successful login
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_email'] = $user['email'];
+            $_SESSION['user_name'] = $user['name'];
+            $_SESSION['is_admin'] = (bool)$user['is_admin'];
+            
+            // Redirect to a protected page
+            if($_SESSION['is_admin']){
+                $_SESSION['alert_message'] = 'Login successful! Welcome back, ' .$user['name']. '!
+                (Admin)';
+                $_SESSION['alert_type'] = 'success';
+            }
+            else{
+                $_SESSION['alert_message'] = 'Login successful! Welcome back, ' .$user['name']. '!
+                (Not admin)';
+                $_SESSION['alert_type'] = 'success';
+            }
+            session_write_close();
+            header('Location: addPost.php');
+            exit;
         } else {
             $_SESSION['alert_message'] = "Invalid email or password";
             $_SESSION['alert_type'] = 'error';

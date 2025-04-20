@@ -124,7 +124,7 @@ $conn->close();
                 <label for="blog">Blog contents</label> <br>
                 <div class="textarea-container">
                     <textarea id="blog" name="blog" placeholder="Write your blog here" 
-                              rows="10" cols="50"><?php echo htmlspecialchars($_POST['blog'] ?? ''); ?></textarea>
+                              ><?php echo htmlspecialchars($_POST['blog'] ?? ''); ?></textarea>
                 </div>
             </p>
             <footer>                
