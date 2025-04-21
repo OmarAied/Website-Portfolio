@@ -137,7 +137,7 @@ $conn->close();
         </div>
         
         <?php if(empty($posts)): ?>
-            <div class="no-posts">No blog posts yet. Be the first to post!</div>
+            <div class="no-posts">No blog posts for the selected month!</div>
         <?php else: ?>
             <div class="blog-posts">
                 <?php foreach($posts as $post): ?>
