@@ -1,12 +1,12 @@
 /* Container Layout */
 .container {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr; /* Splits grid columns into 4 with middle taking up 2 fractional units */
     gap: 2em;
     padding: 1em;
     padding-bottom: 6em;
     position: relative;
-    top: 5em;
+    top: 5em; /* Pushes the container down */
 }
 
 /* leftSidebar & Right Sidebar */
@@ -15,7 +15,7 @@
     color: white;
     font-weight: bold;
     padding: 20px;
-    border-radius: 50px;
+    border-radius: 50px; /*Rounded corners*/
     box-shadow: 20px 20px 50px #018a54; /*Shadow effect*/
 }
 main{
@@ -25,7 +25,6 @@ main{
 
 .leftSidebar h2, .rightSidebar h2 {
     font-size: 1.2rem;
-    font-weight: bold;
     color: white;
     text-align: center;
     background-color: #ae0049;
@@ -60,8 +59,7 @@ main{
 
 .profile img {
     max-width: 15em;
-    max-height: 15em;
-    border-radius: 100%;
+    border-radius: 100%; /* Makes the image border circular */
     border: 5px solid #ae0049;
     box-shadow: 0px 0px 20px #ae0049;
 }
@@ -72,13 +70,9 @@ main{
 }
 
 /* Side contents */
-.skills, .hobbies, .movies, .research, .links, .education {
+.skills, .hobbies, .research, .education {
     background-color: #223247;
     border-radius: 10px;
-}
-
-.links img {
-    width: 5em;
 }
 
 .skills ol {
@@ -90,10 +84,10 @@ main{
     max-width: 2em;
 }
 
-.hobbies ul, .movies ul, .research ul, .links ul, .education ul {
+.hobbies ul, .research ul, .education ul {
     padding-left: 1em;
 }
 
 #education, #skills {
-    scroll-margin-top: 5rem;
+    scroll-margin-top: 5rem; /* Adjusts the scroll position to be top of section when jumping to them*/
 }
